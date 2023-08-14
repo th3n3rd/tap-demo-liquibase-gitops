@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tap-demo-liquibase-liquibase-config
+  labels:
+    app.kubernetes.io/part-of: tap-demo-liquibase
+    apps.tanzu.vmware.com/has-db-migrations: "true"
+    apps.tanzu.vmware.com/workload-type: web
+    app.kubernetes.io/component: run
+    carto.run/workload-name: tap-demo-liquibase
+data:
+  1-greetings-table.sql: |
+    --liquibase formatted sql
+
+    --changeset mgarofalo:create-greetings-table
+    create table greetings
+    (
+        id      bigint primary key,
+        message varchar(255) not null
+    );
+
+    --changeset mgarofalo:add-sample-greetings
+    insert into greetings(id, message) values (1, 'Hello World!');
+    insert into greetings(id, message) values (2, 'Ciao Mondo!');
+    insert into greetings(id, message) values (3, 'Bonjour Le Monde!');
+  db.changelog-master.yaml: |
+    databaseChangeLog:
+      - include:
+          file: 1-greetings-table.sql
+          relativeToChangelogFile: true
+
