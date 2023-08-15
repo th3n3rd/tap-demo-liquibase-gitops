@@ -76,12 +76,11 @@ spec:
       initContainers:
       - args:
         - |
-          cp /liquibase-config/* /liquibase/changelog
           echo "changeLogFile: /liquibase/changelog/db.changelog-master.yaml" >> /liquibase/changelog/liquibase.properties
-          echo "username: $(cat /bindings/db/username)" >> /liquibase/changelog/liquibase.properties
-          echo "password: $(cat /bindings/db/password)" >> /liquibase/changelog/liquibase.properties
-          echo "url: jdbc:$(cat /bindings/db/type)://$(cat /bindings/db/host):$(cat /bindings/db/port)/$(cat /bindings/db/database)" >> /liquibase/changelog/liquibase.properties
-          liquibase update
+          echo "username: $(cat /bindings/db/username)" >> /etc/liquibase.properties
+          echo "password: $(cat /bindings/db/password)" >> /etc/liquibase.properties
+          echo "url: jdbc:$(cat /bindings/db/type)://$(cat /bindings/db/host):$(cat /bindings/db/port)/$(cat /bindings/db/database)" >> /etc/liquibase.properties
+          liquibase update --defaultsFile=/etc/liquibase.properties
         command:
         - /bin/sh
         - -c
@@ -89,7 +88,7 @@ spec:
         name: db-migrations
         resources: {}
         volumeMounts:
-        - mountPath: /liquibase-config
+        - mountPath: /liquibase/changelog
           name: liquibase-config
           readOnly: true
       serviceAccountName: default
