@@ -80,7 +80,7 @@ spec:
           echo "username: $(cat /bindings/db/username)" >> /liquibase/changelog/liquibase.properties
           echo "password: $(cat /bindings/db/password)" >> /liquibase/changelog/liquibase.properties
           echo "url: jdbc:$(cat /bindings/db/type)://$(cat /bindings/db/host):$(cat /bindings/db/port)/$(cat /bindings/db/database)" >> /liquibase/changelog/liquibase.properties
-          liquibase --update
+          liquibase update
         command:
         - /bin/sh
         - -c
