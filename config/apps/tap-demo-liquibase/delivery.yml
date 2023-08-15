@@ -91,6 +91,6 @@ spec:
       serviceAccountName: default
       volumes:
       - configMap:
-          name: liquibase-config
+          name: tap-demo-liquibase-liquibase-config
         name: liquibase-config
 
