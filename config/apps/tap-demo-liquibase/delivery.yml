@@ -79,7 +79,7 @@ spec:
           set -e
           cd `mktemp -d`
           cp /liquibase-config/* .
-          echo "changeLogFile: $(pwd)/db.changelog-master.yaml" >> ./liquibase.properties
+          echo "changeLogFile: ./db.changelog-master.yaml" >> ./liquibase.properties
           echo "username: $(cat /bindings/db/username)" >> ./liquibase.properties
           echo "password: $(cat /bindings/db/password)" >> ./liquibase.properties
           echo "url: jdbc:$(cat /bindings/db/type)://$(cat /bindings/db/host):$(cat /bindings/db/port)/$(cat /bindings/db/database)" >> ./liquibase.properties
