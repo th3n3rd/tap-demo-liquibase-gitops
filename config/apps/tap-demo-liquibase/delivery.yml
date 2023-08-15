@@ -76,9 +76,11 @@ spec:
       initContainers:
       - args:
         - |
-          echo "This should work, let's see"
-          ls -l /bindings/db
-          ls -l /liquibase/changelog
+          echo "changeLogFile: /liquibase/changelog/db.changelog-master.yaml" >> /liquibase/changelog/liquibase.properties
+          echo "username: $(cat /bindings/db/username)" >> /liquibase/changelog/liquibase.properties
+          echo "password: $(cat /bindings/db/password)" >> /liquibase/changelog/liquibase.properties
+          echo "url: jdbc:$(cat /bindings/db/type)://$(cat /bindings/db/host):$(cat /bindings/db/port)/$(cat /bindings/db/database)" >> /liquibase/changelog/liquibase.properties
+          liquibase --update
         command:
         - /bin/sh
         - -c
