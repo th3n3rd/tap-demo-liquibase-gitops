@@ -76,13 +76,15 @@ spec:
       initContainers:
       - args:
         - |
-          echo "changeLogFile: /liquibase/changelog/db.changelog-master.yaml" >> /tmp/liquibase.properties
-          echo "username: $(cat /bindings/db/username)" >> /tmp/liquibase.properties
-          echo "password: $(cat /bindings/db/password)" >> /tmp/liquibase.properties
-          echo "url: jdbc:$(cat /bindings/db/type)://$(cat /bindings/db/host):$(cat /bindings/db/port)/$(cat /bindings/db/database)" >> /tmp/liquibase.properties
-          ls -l /liquibase/changelog
-          cat /liquibase/changelog/db.changelog-master.yaml
-          liquibase update --defaultsFile=/tmp/liquibase.properties
+          set -e
+          cd `mktemp -d`
+          cp /liquibase-config/* .
+          echo "changeLogFile: $(pwd)/db.changelog-master.yaml" >> ./liquibase.properties
+          echo "username: $(cat /bindings/db/username)" >> ./liquibase.properties
+          echo "password: $(cat /bindings/db/password)" >> ./liquibase.properties
+          echo "url: jdbc:$(cat /bindings/db/type)://$(cat /bindings/db/host):$(cat /bindings/db/port)/$(cat /bindings/db/database)" >> ./liquibase.properties
+          ls -l .
+          liquibase update --defaultsFile=$(pwd)/liquibase.properties
         command:
         - /bin/sh
         - -c
@@ -90,7 +92,7 @@ spec:
         name: db-migrations
         resources: {}
         volumeMounts:
-        - mountPath: /liquibase/changelog
+        - mountPath: /liquibase-config
           name: liquibase-config
           readOnly: true
       serviceAccountName: default
