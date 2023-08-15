@@ -88,6 +88,7 @@ spec:
         volumeMounts:
         - mountPath: /liquibase/changelog
           name: liquibase-config
+          readOnly: true
       serviceAccountName: default
       volumes:
       - configMap:
