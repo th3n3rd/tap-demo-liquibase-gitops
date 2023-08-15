@@ -84,7 +84,7 @@ spec:
           echo "password: $(cat /bindings/db/password)" >> ./liquibase.properties
           echo "url: jdbc:$(cat /bindings/db/type)://$(cat /bindings/db/host):$(cat /bindings/db/port)/$(cat /bindings/db/database)" >> ./liquibase.properties
           ls -l .
-          liquibase --log-level=FINE update --defaultsFile=$(pwd)/liquibase.properties
+          liquibase update --defaultsFile=$(pwd)/liquibase.properties
         command:
         - /bin/sh
         - -c
