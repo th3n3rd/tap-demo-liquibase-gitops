@@ -76,11 +76,11 @@ spec:
       initContainers:
       - args:
         - |
-          echo "changeLogFile: /liquibase/changelog/db.changelog-master.yaml" >> /liquibase/changelog/liquibase.properties
-          echo "username: $(cat /bindings/db/username)" >> /etc/liquibase.properties
-          echo "password: $(cat /bindings/db/password)" >> /etc/liquibase.properties
-          echo "url: jdbc:$(cat /bindings/db/type)://$(cat /bindings/db/host):$(cat /bindings/db/port)/$(cat /bindings/db/database)" >> /etc/liquibase.properties
-          liquibase update --defaultsFile=/etc/liquibase.properties
+          echo "changeLogFile: /liquibase/changelog/db.changelog-master.yaml" >> /tmp/liquibase.properties
+          echo "username: $(cat /bindings/db/username)" >> /tmp/liquibase.properties
+          echo "password: $(cat /bindings/db/password)" >> /tmp/liquibase.properties
+          echo "url: jdbc:$(cat /bindings/db/type)://$(cat /bindings/db/host):$(cat /bindings/db/port)/$(cat /bindings/db/database)" >> /tmp/liquibase.properties
+          liquibase update --defaultsFile=/tmp/liquibase.properties
         command:
         - /bin/sh
         - -c
