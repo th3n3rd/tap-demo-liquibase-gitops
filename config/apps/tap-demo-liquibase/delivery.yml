@@ -74,12 +74,23 @@ spec:
         securityContext:
           runAsUser: 1000
       initContainers:
-      - command:
-        - ls
-        - -l
-        - /bindings/db
+      - args:
+        - |
+          echo "This should work, let's see"
+          ls -l /bindings/db
+          ls -l /liquibase/changelog
+        command:
+        - /bin/sh
+        - -c
         image: index.docker.io/liquibase/liquibase@sha256:402dd9d122a0ce1b5d6e165492c5d45d06694dc5be64c0d36fdb219f783d7551
         name: db-migrations
         resources: {}
+        volumeMounts:
+        - mountPath: /liquibase/changelog
+          name: liquibase-config
       serviceAccountName: default
+      volumes:
+      - configMap:
+          name: liquibase-config
+        name: liquibase-config
 
