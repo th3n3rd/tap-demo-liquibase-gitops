@@ -55,7 +55,7 @@ spec:
           value: "false"
         - name: JAVA_TOOL_OPTIONS
           value: -Dmanagement.endpoint.health.probes.add-additional-paths="true" -Dmanagement.health.probes.enabled="true" -Dserver.port="8080" -Dserver.shutdown.grace-period="24s"
-        image: us-east1-docker.pkg.dev/tap-sandbox-dev/tap-dashing-kangaroo/tap-demo-liquibase-apps@sha256:af7e94553ea49fb25931ac69f80e7bdbc07df382f5cd8251290cdb20c2054b71
+        image: us-central1-docker.pkg.dev/tap-sandbox-dev/tap-huge-lark/tap-demo-liquibase-apps@sha256:0a5813a76ab08c59ef3d89f0a39933296241ca5e99769fb52e6f0d3f48af0eea
         livenessProbe:
           httpGet:
             path: /livez
@@ -77,7 +77,7 @@ spec:
       - command:
         - ls
         - -l
-        - /
+        - /bindings/db
         image: index.docker.io/liquibase/liquibase@sha256:402dd9d122a0ce1b5d6e165492c5d45d06694dc5be64c0d36fdb219f783d7551
         name: db-migrations
         resources: {}
