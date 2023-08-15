@@ -80,6 +80,8 @@ spec:
           echo "username: $(cat /bindings/db/username)" >> /tmp/liquibase.properties
           echo "password: $(cat /bindings/db/password)" >> /tmp/liquibase.properties
           echo "url: jdbc:$(cat /bindings/db/type)://$(cat /bindings/db/host):$(cat /bindings/db/port)/$(cat /bindings/db/database)" >> /tmp/liquibase.properties
+          ls -l /liquibase/changelog
+          cat /liquibase/changelog/db.changelog-master.yaml
           liquibase update --defaultsFile=/tmp/liquibase.properties
         command:
         - /bin/sh
