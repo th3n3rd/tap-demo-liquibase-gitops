@@ -55,7 +55,7 @@ spec:
           value: "false"
         - name: JAVA_TOOL_OPTIONS
           value: -Dmanagement.endpoint.health.probes.add-additional-paths="true" -Dmanagement.health.probes.enabled="true" -Dserver.port="8080" -Dserver.shutdown.grace-period="24s"
-        image: us-central1-docker.pkg.dev/tap-sandbox-dev/tap-assuring-gnat/tap-demo-liquibase-apps@sha256:ba0099f532022162bcc02b7e2732b3fcbab34060f053d104bc2b3fbf187095c6
+        image: us-central1-docker.pkg.dev/tap-sandbox-dev/tap-assuring-gnat/tap-demo-liquibase-apps@sha256:e586364573b693021fd05572b9102522d290b8e3bd6603b3260eab81662aac93
         livenessProbe:
           httpGet:
             path: /livez
