@@ -1,0 +1,69 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tap-demo-liquibase-liquibase-config
+  labels:
+    app.kubernetes.io/part-of: tap-demo-liquibase
+    apps.tanzu.vmware.com/has-db-migrations: "true"
+    apps.tanzu.vmware.com/workload-type: web
+    app.kubernetes.io/component: run
+    carto.run/workload-name: tap-demo-liquibase
+data:
+  1-greetings-table.sql: |
+    --liquibase formatted sql
+
+    --changeset mgarofalo:create-greetings-table
+    create table greetings
+    (
+        id      bigint primary key,
+        message varchar(255) not null
+    );
+
+    --changeset mgarofalo:add-sample-greetings
+    insert into greetings(id, message) values (1, 'Hello World!');
+    insert into greetings(id, message) values (2, 'Ciao Mondo!');
+    insert into greetings(id, message) values (3, 'Bonjour Le Monde!');
+  db.changelog-master.yaml: |
+    databaseChangeLog:
+      - include:
+          file: 1-greetings-table.sql
+          relativeToChangelogFile: true
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: tap-demo-liquibase-liquibase-runner
+  annotations:
+    kapp.k14s.io/change-group: db-migrations/tap-demo-liquibase
+    kapp.k14s.io/change-rule.0: upsert after upserting servicebinding.io/ServiceBindings
+    kapp.k14s.io/change-rule.1: upsert before upserting workload/tap-demo-liquibase
+spec:
+  template:
+    spec:
+      containers:
+      - name: db-migrations
+        image: liquibase/liquibase@sha256:402dd9d122a0ce1b5d6e165492c5d45d06694dc5be64c0d36fdb219f783d7551
+        command:
+        - /bin/sh
+        - -c
+        args:
+        - |
+          set -e
+          cd `mktemp -d`
+          cp /liquibase-config/* .
+          echo "changeLogFile: ./db.changelog-master.yaml" >> ./liquibase.properties
+          echo "username: $(cat /bindings/db/username)" >> ./liquibase.properties
+          echo "password: $(cat /bindings/db/password)" >> ./liquibase.properties
+          echo "url: jdbc:$(cat /bindings/db/type)://$(cat /bindings/db/host):$(cat /bindings/db/port)/$(cat /bindings/db/database)" >> ./liquibase.properties
+          liquibase update --defaultsFile=$(pwd)/liquibase.properties
+        volumeMounts:
+        - name: liquibase-config
+          mountPath: /liquibase-config
+          readOnly: true
+      volumes:
+      - name: liquibase-config
+        configMap:
+          name: tap-demo-liquibase-liquibase-config
+      restartPolicy: Never
+  backoffLimit: 2
+
