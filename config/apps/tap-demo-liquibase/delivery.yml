@@ -32,7 +32,7 @@ spec:
           spring-boot-convention/service-intent-postgres
         developer.conventions/target-containers: workload
         kubectl.kubernetes.io/last-applied-configuration: |
-          {"apiVersion":"carto.run/v1alpha1","kind":"Workload","metadata":{"annotations":{},"labels":{"app.kubernetes.io/part-of":"tap-demo-liquibase","apps.tanzu.vmware.com/has-db-migrations":"true","apps.tanzu.vmware.com/workload-type":"web"},"name":"tap-demo-liquibase","namespace":"apps"},"spec":{"build":{"env":[{"name":"BP_JVM_VERSION","value":"17"}]},"env":[{"name":"spring.liquibase.enabled","value":"false"}],"params":[{"name":"annotations","value":{"autoscaling.knative.dev/min-scale":"1"}},{"name":"gitops_server_address","value":"ssh://git@github.com"},{"name":"gitops_repository_owner","value":"th3n3rd"},{"name":"gitops_repository_name","value":"tap-demo-liquibase-gitops"},{"name":"gitops_branch","value":"dev"},{"name":"gitops_commit_message","value":"Update tap-demo-liquibase config"},{"name":"gitops_ssh_secret","value":"tap-gitops-ssh-auth"}],"serviceClaims":[{"name":"db","ref":{"apiVersion":"services.apps.tanzu.vmware.com/v1alpha1","kind":"ClassClaim","name":"tap-demo-liquibase-db"}}],"source":{"git":{"ref":{"branch":"main"},"url":"ssh://git@github.com/th3n3rd/tap-demo-liquibase.git"}}}}
+          {"apiVersion":"carto.run/v1alpha1","kind":"Workload","metadata":{"annotations":{},"labels":{"app.kubernetes.io/part-of":"tap-demo-liquibase","apps.tanzu.vmware.com/has-db-migrations":"true","apps.tanzu.vmware.com/workload-type":"web"},"name":"tap-demo-liquibase","namespace":"apps"},"spec":{"build":{"env":[{"name":"BP_JVM_VERSION","value":"17"}]},"env":[{"name":"spring.liquibase.enabled","value":"false"}],"params":[{"name":"annotations","value":{"autoscaling.knative.dev/min-scale":"1"}},{"name":"gitops_server_address","value":"ssh://git@github.com"},{"name":"gitops_repository_owner","value":"th3n3rd"},{"name":"gitops_repository_name","value":"tap-demo-liquibase-gitops"},{"name":"gitops_branch","value":"dev"},{"name":"gitops_commit_message","value":"Update tap-demo-liquibase config"},{"name":"gitops_ssh_secret","value":"tap-gitops-ssh-auth"},{"name":"db_migrations_path","value":"./src/main/resources/db/changelog/*"}],"serviceClaims":[{"name":"db","ref":{"apiVersion":"services.apps.tanzu.vmware.com/v1alpha1","kind":"ClassClaim","name":"tap-demo-liquibase-db"}}],"source":{"git":{"ref":{"branch":"main"},"url":"ssh://git@github.com/th3n3rd/tap-demo-liquibase.git"}}}}
         services.conventions.carto.run/postgres: postgresql/42.6.0
       labels:
         app.kubernetes.io/component: run
@@ -55,7 +55,7 @@ spec:
           value: "false"
         - name: JAVA_TOOL_OPTIONS
           value: -Dmanagement.endpoint.health.probes.add-additional-paths="true" -Dmanagement.health.probes.enabled="true" -Dserver.port="8080" -Dserver.shutdown.grace-period="24s"
-        image: us-central1-docker.pkg.dev/tap-sandbox-dev/tap-assuring-gnat/tap-demo-liquibase-apps@sha256:e586364573b693021fd05572b9102522d290b8e3bd6603b3260eab81662aac93
+        image: us-east1-docker.pkg.dev/tap-sandbox-dev/tap-open-calf/tap-demo-liquibase-apps@sha256:b34830af04a16e2e05848d85e2c2d5a6aedf256e08d0c519020e653b485a0f56
         livenessProbe:
           httpGet:
             path: /livez
@@ -73,30 +73,5 @@ spec:
         resources: {}
         securityContext:
           runAsUser: 1000
-      initContainers:
-      - args:
-        - |
-          set -e
-          cd `mktemp -d`
-          cp /liquibase-config/* .
-          echo "changeLogFile: ./db.changelog-master.yaml" >> ./liquibase.properties
-          echo "username: $(cat /bindings/db/username)" >> ./liquibase.properties
-          echo "password: $(cat /bindings/db/password)" >> ./liquibase.properties
-          echo "url: jdbc:$(cat /bindings/db/type)://$(cat /bindings/db/host):$(cat /bindings/db/port)/$(cat /bindings/db/database)" >> ./liquibase.properties
-          liquibase update --defaultsFile=$(pwd)/liquibase.properties
-        command:
-        - /bin/sh
-        - -c
-        image: index.docker.io/liquibase/liquibase@sha256:402dd9d122a0ce1b5d6e165492c5d45d06694dc5be64c0d36fdb219f783d7551
-        name: db-migrations
-        resources: {}
-        volumeMounts:
-        - mountPath: /liquibase-config
-          name: liquibase-config
-          readOnly: true
       serviceAccountName: default
-      volumes:
-      - configMap:
-          name: tap-demo-liquibase-liquibase-config
-        name: liquibase-config
 
