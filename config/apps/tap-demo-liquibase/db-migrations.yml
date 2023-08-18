@@ -6,7 +6,7 @@ metadata:
     app.kubernetes.io/part-of: tap-demo-liquibase
     apps.tanzu.vmware.com/has-db-migrations: "true"
     apps.tanzu.vmware.com/workload-type: web
-    app.kubernetes.io/component: run
+    app.kubernetes.io/component: db-migrations
     carto.run/workload-name: tap-demo-liquibase
 data:
   1-greetings-table.sql: |
@@ -71,6 +71,13 @@ metadata:
     carto.run/workload-name: tap-demo-liquibase
 spec:
   template:
+    metadata:
+      labels:
+        app.kubernetes.io/part-of: tap-demo-liquibase
+        apps.tanzu.vmware.com/has-db-migrations: "true"
+        apps.tanzu.vmware.com/workload-type: web
+        app.kubernetes.io/component: db-migrations
+        carto.run/workload-name: tap-demo-liquibase
     spec:
       containers:
       - name: db-migrations
