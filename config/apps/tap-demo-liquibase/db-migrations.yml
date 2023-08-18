@@ -91,7 +91,7 @@ spec:
           set -e
           cd `mktemp -d`
           cp /liquibase-config/* .
-          #@ "SERVICE_CLAIM=" + param("db_migrations_service_claim_name")
+          SERVICE_CLAIM="(@ param("db_migrations_service_claim_name") @)"
           echo "changeLogFile: ./db.changelog-master.yaml" >> ./liquibase.properties
           echo "username: $(cat /bindings/$SERVICE_CLAIM/username)" >> ./liquibase.properties
           echo "password: $(cat /bindings/$SERVICE_CLAIM/password)" >> ./liquibase.properties
