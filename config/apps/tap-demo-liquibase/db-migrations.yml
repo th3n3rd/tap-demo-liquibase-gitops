@@ -91,10 +91,11 @@ spec:
           set -e
           cd `mktemp -d`
           cp /liquibase-config/* .
+          #@ "SERVICE_CLAIM=" + param("db_migrations_service_claim_name")
           echo "changeLogFile: ./db.changelog-master.yaml" >> ./liquibase.properties
-          echo "username: $(cat /bindings/db/username)" >> ./liquibase.properties
-          echo "password: $(cat /bindings/db/password)" >> ./liquibase.properties
-          echo "url: jdbc:$(cat /bindings/db/type)://$(cat /bindings/db/host):$(cat /bindings/db/port)/$(cat /bindings/db/database)" >> ./liquibase.properties
+          echo "username: $(cat /bindings/$SERVICE_CLAIM/username)" >> ./liquibase.properties
+          echo "password: $(cat /bindings/$SERVICE_CLAIM/password)" >> ./liquibase.properties
+          echo "url: jdbc:$(cat /bindings/$SERVICE_CLAIM/type)://$(cat /bindings/$SERVICE_CLAIM/host):$(cat /bindings/$SERVICE_CLAIM/port)/$(cat /bindings/$SERVICE_CLAIM/database)" >> ./liquibase.properties
           liquibase update --defaultsFile=$(pwd)/liquibase.properties
         volumeMounts:
         - name: liquibase-config
