@@ -63,6 +63,7 @@ metadata:
     kapp.k14s.io/change-group: db-migrations/tap-demo-liquibase
     kapp.k14s.io/change-rule.0: upsert after upserting servicebinding.io/ServiceBindings
     kapp.k14s.io/change-rule.1: upsert before upserting workload/tap-demo-liquibase
+    kapp.k14s.io/update-strategy: always-replace
   labels:
     app.kubernetes.io/part-of: tap-demo-liquibase
     apps.tanzu.vmware.com/has-db-migrations: "true"
