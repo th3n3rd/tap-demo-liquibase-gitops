@@ -1,0 +1,67 @@
+apiVersion: kapp.k14s.io/v1alpha1
+kind: Config
+waitRules:
+- conditionMatchers:
+  - type: ServiceAvailable
+    status: "False"
+    failure: true
+  - type: ServiceAvailable
+    status: "True"
+    success: true
+  resourceMatchers:
+  - apiVersionKindMatcher:
+      apiVersion: servicebinding.io/v1alpha3
+      kind: ServiceBinding
+---
+apiVersion: servicebinding.io/v1alpha3
+kind: ServiceBinding
+metadata:
+  name: tap-demo-liquibase-db
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"carto.run/v1alpha1","kind":"Workload","metadata":{"annotations":{},"labels":{"app.kubernetes.io/part-of":"tap-demo-liquibase","apps.tanzu.vmware.com/has-db-migrations":"true","apps.tanzu.vmware.com/workload-type":"web"},"name":"tap-demo-liquibase","namespace":"apps"},"spec":{"build":{"env":[{"name":"BP_JVM_VERSION","value":"17"}]},"env":[{"name":"spring.liquibase.enabled","value":"false"}],"params":[{"name":"annotations","value":{"autoscaling.knative.dev/min-scale":"1"}},{"name":"gitops_server_address","value":"ssh://git@github.com"},{"name":"gitops_repository_owner","value":"th3n3rd"},{"name":"gitops_repository_name","value":"tap-demo-liquibase-gitops"},{"name":"gitops_branch","value":"dev"},{"name":"gitops_commit_message","value":"Update tap-demo-liquibase config"},{"name":"gitops_ssh_secret","value":"tap-gitops-ssh-auth"},{"name":"db_migrations_path","value":"./src/main/resources/db/changelog/*"},{"name":"db_migrations_service_claim_name","value":"db-migrations"}],"serviceClaims":[{"name":"db","ref":{"apiVersion":"services.apps.tanzu.vmware.com/v1alpha1","kind":"ClassClaim","name":"tap-demo-liquibase-db"}},{"name":"db-migrations","ref":{"apiVersion":"services.apps.tanzu.vmware.com/v1alpha1","kind":"ClassClaim","name":"tap-demo-liquibase-db"}}],"source":{"git":{"ref":{"branch":"main"},"url":"ssh://git@github.com/th3n3rd/tap-demo-liquibase.git"}}}}
+    autoscaling.knative.dev/min-scale: "1"
+    kapp.k14s.io/change-group: servicebinding.io/ServiceBindings
+  labels:
+    app.kubernetes.io/part-of: tap-demo-liquibase
+    apps.tanzu.vmware.com/has-db-migrations: "true"
+    apps.tanzu.vmware.com/workload-type: web
+    app.kubernetes.io/component: run
+    carto.run/workload-name: tap-demo-liquibase
+spec:
+  name: db
+  service:
+    apiVersion: services.apps.tanzu.vmware.com/v1alpha1
+    kind: ClassClaim
+    name: tap-demo-liquibase-db
+  workload:
+    apiVersion: serving.knative.dev/v1
+    kind: Service
+    name: tap-demo-liquibase
+---
+apiVersion: servicebinding.io/v1alpha3
+kind: ServiceBinding
+metadata:
+  name: tap-demo-liquibase-db-migrations
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"carto.run/v1alpha1","kind":"Workload","metadata":{"annotations":{},"labels":{"app.kubernetes.io/part-of":"tap-demo-liquibase","apps.tanzu.vmware.com/has-db-migrations":"true","apps.tanzu.vmware.com/workload-type":"web"},"name":"tap-demo-liquibase","namespace":"apps"},"spec":{"build":{"env":[{"name":"BP_JVM_VERSION","value":"17"}]},"env":[{"name":"spring.liquibase.enabled","value":"false"}],"params":[{"name":"annotations","value":{"autoscaling.knative.dev/min-scale":"1"}},{"name":"gitops_server_address","value":"ssh://git@github.com"},{"name":"gitops_repository_owner","value":"th3n3rd"},{"name":"gitops_repository_name","value":"tap-demo-liquibase-gitops"},{"name":"gitops_branch","value":"dev"},{"name":"gitops_commit_message","value":"Update tap-demo-liquibase config"},{"name":"gitops_ssh_secret","value":"tap-gitops-ssh-auth"},{"name":"db_migrations_path","value":"./src/main/resources/db/changelog/*"},{"name":"db_migrations_service_claim_name","value":"db-migrations"}],"serviceClaims":[{"name":"db","ref":{"apiVersion":"services.apps.tanzu.vmware.com/v1alpha1","kind":"ClassClaim","name":"tap-demo-liquibase-db"}},{"name":"db-migrations","ref":{"apiVersion":"services.apps.tanzu.vmware.com/v1alpha1","kind":"ClassClaim","name":"tap-demo-liquibase-db"}}],"source":{"git":{"ref":{"branch":"main"},"url":"ssh://git@github.com/th3n3rd/tap-demo-liquibase.git"}}}}
+    autoscaling.knative.dev/min-scale: "1"
+    kapp.k14s.io/change-group: servicebinding.io/ServiceBindings
+  labels:
+    app.kubernetes.io/part-of: tap-demo-liquibase
+    apps.tanzu.vmware.com/has-db-migrations: "true"
+    apps.tanzu.vmware.com/workload-type: web
+    app.kubernetes.io/component: run
+    carto.run/workload-name: tap-demo-liquibase
+spec:
+  name: db-migrations
+  service:
+    apiVersion: services.apps.tanzu.vmware.com/v1alpha1
+    kind: ClassClaim
+    name: tap-demo-liquibase-db
+  workload:
+    apiVersion: serving.knative.dev/v1
+    kind: Service
+    name: tap-demo-liquibase
+
