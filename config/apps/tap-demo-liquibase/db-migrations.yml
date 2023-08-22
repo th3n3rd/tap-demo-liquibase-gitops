@@ -13,6 +13,16 @@ metadata:
     kapp.k14s.io/num-versions: "2"
     kapp.k14s.io/versioned-keep-original: ""
 data:
+  2-add-language-column-to-greetings.sql: |
+    --liquibase formatted sql
+
+    --changeset mgarofalo:add-language-column-to-greetings
+    alter table greetings add column language char(3) default 'eng';
+
+    --changeset mgarofalo:update-languages
+    update greetings set language='eng' where id = 1;
+    update greetings set language='ita' where id = 2;
+    update greetings set language='fra' where id = 3;
   1-greetings-table.sql: |
     --liquibase formatted sql
 
@@ -31,6 +41,9 @@ data:
     databaseChangeLog:
       - include:
           file: 1-greetings-table.sql
+          relativeToChangelogFile: true
+      - include:
+          file: 2-add-language-column-to-greetings.sql
           relativeToChangelogFile: true
 ---
 apiVersion: servicebinding.io/v1alpha3
