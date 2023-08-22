@@ -11,6 +11,7 @@ metadata:
   annotations:
     kapp.k14s.io/versioned: ""
     kapp.k14s.io/num-versions: "2"
+    kapp.k14s.io/versioned-keep-original: ""
 data:
   1-greetings-table.sql: |
     --liquibase formatted sql
