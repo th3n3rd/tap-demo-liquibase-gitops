@@ -94,7 +94,9 @@ spec:
         - |
           set -e
           cd `mktemp -d`
+          ls -l /liquibase-config
           cp -r /liquibase-config/* .
+          ls -l
           SERVICE_CLAIM="db-migrations"
           echo "changeLogFile: ./db.changelog-master.yaml" >> ./liquibase.properties
           echo "username: $(cat /bindings/$SERVICE_CLAIM/username)" >> ./liquibase.properties
