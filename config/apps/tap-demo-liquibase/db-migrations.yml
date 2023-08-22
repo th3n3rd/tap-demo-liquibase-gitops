@@ -10,7 +10,7 @@ metadata:
     carto.run/workload-name: tap-demo-liquibase
   annotations:
     kapp.k14s.io/versioned: ""
-    kapp.k14s.io/num-versions: 2
+    kapp.k14s.io/num-versions: "2"
 data:
   db.changelog-master.yaml: |
     databaseChangeLog:
